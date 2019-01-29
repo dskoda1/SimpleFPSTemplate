@@ -6,6 +6,8 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include <GameFramework/Actor.h>
+#include "BombActor.h"
 
 
 AFPSCharacter::AFPSCharacter()
@@ -30,14 +32,15 @@ AFPSCharacter::AFPSCharacter()
 }
 
 
+
 void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	// set up gameplay key bindings
+	// set up game play key bindings
 	check(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AFPSCharacter::Fire);
-
+	PlayerInputComponent->BindAction("SpawnBomb", IE_Pressed, this, &AFPSCharacter::SpawnBomb);
 	PlayerInputComponent->BindAxis("MoveForward", this, &AFPSCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AFPSCharacter::MoveRight);
 
@@ -63,7 +66,7 @@ void AFPSCharacter::Fire()
 	}
 
 	// try and play the sound if specified
-	if (FireSound)
+	if (FireSound && false)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 	}
@@ -78,6 +81,11 @@ void AFPSCharacter::Fire()
 			AnimInstance->PlaySlotAnimationAsDynamicMontage(FireAnimation, "Arms", 0.0f);
 		}
 	}
+}
+
+void AFPSCharacter::SpawnBomb()
+{
+	ABombActor* myBomb = GetWorld()->SpawnActor<ABombActor>(BombClass, GetActorLocation(), GetActorRotation());
 }
 
 
